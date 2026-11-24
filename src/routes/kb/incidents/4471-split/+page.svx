@@ -1,0 +1,44 @@
+---
+layout: runbook
+title: '#4471, split: three problems, not one'
+owner: Paulo Choi (with Claude Code)
+status: proposed
+reviewed: 2026-11-23
+signature: v1.eyJzdWIiOiI5NjIiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhdCI6MTc5NTQ4OTg1NCwiZXhwIjoxNzk1NTc2MjU0fQ.wVxdg_OQ2HI5a4vsdLrzmBM7aZLD0YoE79m23R0Avd0
+---
+
+<script>
+  import ProblemSplit from '#lib/kb/ProblemSplit.svelte';
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) says one issue with one fix queued. The reports in it describe three problems.
+Each one has its own ticket in [paulochoi/mega-s01e03-what-it-shows-run2](https://github.com/paulochoi/mega-s01e03-what-it-shows-run2/issues).
+
+<Callout kind="warn">
+The parser fix does not close #4471 on its own. The booking-v3 hint and the one-day shift need their own fixes.
+</Callout>
+
+## The split
+
+<ProblemSplit ticket={4471} repo="paulochoi/mega-s01e03-what-it-shows-run2" />
+
+## What each problem is
+
+- **Parser reads dates month first.** Every tenant in #4471 writes the day first. The shared parser reads the month first, so 7 April becomes 4 July. This is the bug #4471 names.
+- **The booking-v3 hint says `MM/DD/YYYY`.** On booking-v3 tenants' forms, people type the month first, as the hint tells them. The form then reads the date day first. The parser plays no part, so its fix will not close this.
+- **Dates are one day off or differ by time zone.** These reports describe a date that moves by one day, or a meeting that falls on different days in Lisbon and Toronto. Day and month are not swapped. The desk notes (`desk-notes.json`) mark them as a one-day move.
+
+## How we counted
+
+The export holds rows that overlap between pages, so reports are counted once by id. Causes come from `causes.ts`, using each report's tenant (locale and form) and channel. Intake's tag is a guess from the browser, and it often disagrees with the cause. The "tagged as" column shows how often. The desk's own table:
+
+<CauseTable ticket={4471} />
+
+## Why one ticket hid three
+
+[Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges reports by subject line. Reports with the same subject but different causes were merged into one ticket, and nobody read the bodies.
+
+<RenderStamp {signature} />
