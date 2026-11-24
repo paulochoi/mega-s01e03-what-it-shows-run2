@@ -37,6 +37,14 @@ The export holds rows that overlap between pages, so reports are counted once by
 
 <CauseTable ticket={4471} />
 
+## Outcome
+
+Engineering update, #4471 closed 5 October:
+
+- **parser**: fixed by `fix(dates): parse dd/mm for eu locales`. Ticket #1 closed as completed.
+- **hint**: won't fix, because the booking-v3 form was retired. Ticket #2 closed as not planned.
+- **one-day shift**: the update does not mention it. Ticket #3 stays open.
+
 ## Why one ticket hid three
 
 [Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges reports by subject line. Reports with the same subject but different causes were merged into one ticket, and nobody read the bodies.
